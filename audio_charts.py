@@ -1,3 +1,5 @@
+import emd
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
@@ -34,3 +36,5 @@ plt.ylabel('Moc')
 
 plt.tight_layout()
 plt.show()
+
+emd.emd(dane, czestotliwosc_probkowania, draw_plot=True)
