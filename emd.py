@@ -60,18 +60,24 @@ def emd(signal, fs, num_iterations: int = None, draw_plot: bool = False):
     # Draw a plot if draw_plot argument is True
     if draw_plot:
         plt.figure()
-        plt.subplot(len(imfs)+1,1,1)
+        plt.subplot(len(imfs)+2,1,1)
         plt.plot(tAxis, orig_x)
         plt.title("Original signal")
 
         for i, imf in enumerate(imfs):
-            plt.subplot(len(imfs)+1,1,i+2)
+            plt.subplot(len(imfs)+2,1,i+2)
             plt.plot(tAxis,imf)
             plt.title(f"IMF {i+1}")
 
-        plt.subplot(len(imfs)+1,1,len(imfs)+1)
+        plt.subplot(len(imfs)+2,1,len(imfs)+1)
         plt.plot(tAxis, signal)
         plt.title("Residue")
+
+        # Plot sum of all IMFs for check
+        sum_imfs = np.sum(imfs, axis=0)
+        plt.subplot(len(imfs) + 2, 1, len(imfs) + 2)
+        plt.plot(tAxis, sum_imfs)
+        plt.title("Sum of all IMFs")
         plt.show()
 
     # Return the array of the imfs and residue
