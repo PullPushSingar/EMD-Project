@@ -40,6 +40,11 @@ def main():
     print(f"MSE(lstm): {mse(y_test, lstm_prediction)}")
     print(f"MSE(ay): {mse(y_test, ay_prediction)}")
     print(f"MSE(alh): {mse(y_test, alh_prediction)}")
+    
+    future_lstm_prediction = future_lstm_predict(model_name, x_test[500:523],7*24)
+    plt.plot(y_test[500: 523 + 24*7], "b")
+    plt.plot(future_lstm_prediction, "g")
+    plt.draw()
 
 def mse(a,b):
     return (np.square(a - b)).mean()

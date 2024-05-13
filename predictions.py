@@ -121,6 +121,30 @@ def lstm_predict(model_name, x):
     model = load_model(f'model/lstm/{model_name}.keras')
     return model.predict(x).flatten()
 
+def run_future_lstm_model(model_name, x_train, y_train, x_val, y_val, window_size, data_types, epochs=10, learning_rate=0.0001):
+    model = Sequential()
+    model.add(InputLayer((window_size, 1)))
+    model.add(LSTM(64))
+    model.add(Dense(8, 'relu'))
+    model.add(Dense(1, 'linear'))
+
+    # Save best fit models to model/ directory
+    cp = ModelCheckpoint(f'model/lstm/{model_name}.keras', save_best_only=True)
+    model.compile(loss=MeanSquaredError(), optimizer=Adam(learning_rate=learning_rate), metrics=[RootMeanSquaredError()])
+    model.summary()
+
+    # Training
+    model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=epochs, callbacks=[cp])
+
+
+def future_lstm_predict(model_name, x, future_len):
+    model = load_model(f'model/future_lstm/{model_name}.keras')
+    prediction = np.concatenate([x, np.zeros((future_len,))])
+    for i in range(future_len):
+        prediction[i+24] = model.predict(prediction[i:i+24]).flatten()
+    return prediction
+
+
 def as_yesterday_predict(x):
     assert all(len(item) >= 24 for item in x)
     return [vals[-24][-1] for vals in x]
