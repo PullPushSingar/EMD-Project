@@ -39,12 +39,6 @@ def emd(signal, fs, num_iterations: int = None, draw_plot: bool = False):
             # Breaks out of the loop if interpolation cannot be done anymore
             break
 
-        # Zero padding to avoid singularities at the edges of the signal
-        # TODO Make it not necessary or at least make it in a nicer way
-        y1[0:5] = 0
-        y1[-5:] = 0
-        y2[0:5] = 0
-        y2[-5:] = 0
         avg_envelope = (y1 + y2) / 2
 
         # Append imf to the array
