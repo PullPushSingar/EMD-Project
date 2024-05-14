@@ -72,6 +72,25 @@ def df_to_X_y(df_dict: dict[pd.DataFrame], window_size: int):
     
     return x_y_by_cities
 
+def imf_to_X_y(imf: list[list[int]], window_size: int):
+    '''Converts imf to (x y) sets'''
+    x = []
+    y = [] 
+
+    imf_np = np.array(imf)
+
+    num_rows = len(imf)
+    # Preallocate arrays for X and y
+    x = np.zeros((num_rows - window_size, window_size, imf_np.shape[1]))
+    y = np.zeros((num_rows - window_size,))
+
+    for i in range(num_rows - window_size):
+        # Use slicing for faster array creation
+        x[i] = imf_np[i:i+window_size]
+        y[i] = imf_np[i+window_size][-1]
+    
+    return np.array(x), np.array(y)
+
 def get_x_y_from_cities(data, cities=None):
     '''If cities == None then get all data'''
     x = []
@@ -122,8 +141,8 @@ def lstm_predict(model_name, x):
     return model.predict(x).flatten()
 
 def as_yesterday_predict(x):
-    assert all(len(item) >= 24 for item in x)
-    return [vals[-24][-1] for vals in x]
+    assert all(len(item) >= 5 for item in x)
+    return [vals[-5][-1] for vals in x]
 
 def as_last_hour_predict(x):
     return [vals[-1][-1] for vals in x]

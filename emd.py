@@ -75,4 +75,4 @@ def emd(signal, fs, num_iterations: int = None, draw_plot: bool = False):
         plt.show()
 
     # Return the array of the imfs and residue
-    return imfs
+    return imfs, signal
