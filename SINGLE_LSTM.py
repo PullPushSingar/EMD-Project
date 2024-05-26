@@ -21,7 +21,7 @@ def main():
     
     # # model_name saved in ./model/ dir
     # # !!! run_lstm_model() overwrites the older model with the same name
-    model_name = "chicago_24h"
+    model_name = "lstm/chicago_24h"
     learning_rate = 0.0001
     num_of_epochs = 10
     # run_lstm_model(model_name, x_train, y_train, x_val, y_val, window_size, data_types, epochs=num_of_epochs, learning_rate=learning_rate)
@@ -35,7 +35,7 @@ def main():
     plt.plot(ay_prediction[50: 50 + 24*7], "r")
     plt.plot(alh_prediction[50: 50 + 24*7], "m")
     plt.legend(["Actual", "LSTM", "As Yesterday", "As Last Hour"])
-    plt.draw()
+    plt.show()
 
     print(f"MSE(lstm): {mse(y_test, lstm_prediction)}")
     print(f"MSE(ay): {mse(y_test, ay_prediction)}")

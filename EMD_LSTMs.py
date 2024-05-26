@@ -49,7 +49,7 @@ def training():
         x, y = imf_to_X_y(imf,window_size)
         x_train, y_train, x_val, y_val, x_test, y_test = divide_data(x, y , train_pc=0.8, val_pc=0.1)
 
-        model_name = f"chicago_emd_imf{imf_iter}"
+        model_name = f"emdlstm/chicago_emd_imf{imf_iter}"
         learning_rate = 0.0001
         num_of_epochs = 100
         run_lstm_model(model_name, x_train, y_train, x_val, y_val, window_size, data_types, epochs=num_of_epochs, learning_rate=learning_rate)
@@ -76,7 +76,7 @@ def training():
     x, y = imf_to_X_y(signal_n,window_size)
     x_train, y_train, x_val, y_val, x_test, y_test = divide_data(x, y , train_pc=0.8, val_pc=0.1)
 
-    model_name = f"residual"
+    model_name = f"emdlstm/residual"
     learning_rate = 0.0001
     num_of_epochs = 100
     run_lstm_model(model_name, x_train, y_train, x_val, y_val, window_size, data_types, epochs=num_of_epochs, learning_rate=learning_rate)
@@ -120,7 +120,7 @@ def predict():
         x, y = imf_to_X_y(imf,window_size)
         x_train, y_train, x_val, y_val, x_test, y_test = divide_data(x, y , train_pc=0.8, val_pc=0.1)
 
-        model_name = f"chicago_emd_imf{imf_iter}"
+        model_name = f"emdlstm/chicago_emd_imf{imf_iter}"
         predict_imf = lstm_predict(model_name, x_test)
         print(predict_imf)
         predicted_imss.append(predict_imf)
@@ -130,7 +130,7 @@ def predict():
     x, y = imf_to_X_y(signal_n,window_size)
     x_train, y_train, x_val, y_val, x_test, y_test = divide_data(x, y , train_pc=0.8, val_pc=0.1)
 
-    model_name = f"residual"
+    model_name = f"emdlstm/residual"
     predict_residual= lstm_predict(model_name, x_test)
     predicted_imss.append(predict_residual)
 
@@ -140,7 +140,7 @@ def predict():
     ay_prediction = as_yesterday_predict(x_test_all)
     alh_prediction = as_last_hour_predict(x_test_all)
 
-    model_name = "chicago_5h_temp_only"
+    model_name = "lstm/chicago_5h_temp_only"
     one_LSTM_prediction = lstm_predict(model_name, x_test_all)
 
     plt.plot(y_test_all[50: 50 + 24*7], "b")

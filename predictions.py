@@ -129,7 +129,7 @@ def run_lstm_model(model_name, x_train, y_train, x_val, y_val, window_size, data
     model.add(Dense(1, 'linear'))
 
     # Save best fit models to model/ directory
-    cp = ModelCheckpoint(f'model/lstm/{model_name}.keras', save_best_only=True)
+    cp = ModelCheckpoint(f'model/{model_name}.keras', save_best_only=True)
     model.compile(loss=MeanSquaredError(), optimizer=Adam(learning_rate=learning_rate), metrics=[RootMeanSquaredError()])
     model.summary()
 
@@ -137,12 +137,12 @@ def run_lstm_model(model_name, x_train, y_train, x_val, y_val, window_size, data
     model.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=epochs, callbacks=[cp])
 
 def lstm_predict(model_name, x):
-    model = load_model(f'model/lstm/{model_name}.keras')
+    model = load_model(f'model/{model_name}.keras')
     return model.predict(x).flatten()
 
 def as_yesterday_predict(x):
-    assert all(len(item) >= 5 for item in x)
-    return [vals[-5][-1] for vals in x]
+    assert all(len(item) >= 24 for item in x)
+    return [vals[-24][-1] for vals in x]
 
 def as_last_hour_predict(x):
     return [vals[-1][-1] for vals in x]
