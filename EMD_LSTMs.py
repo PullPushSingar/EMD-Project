@@ -52,10 +52,12 @@ def training():
         model_name = f"emdlstm/chicago_emd_imf{imf_iter}"
         learning_rate = 0.0001
         num_of_epochs = 100
-        run_lstm_model(model_name, x_train, y_train, x_val, y_val, window_size, data_types, epochs=num_of_epochs, learning_rate=learning_rate)
+        # run_lstm_model(model_name, x_train, y_train, x_val, y_val, window_size, data_types, epochs=num_of_epochs, learning_rate=learning_rate)
         lstm_prediction = lstm_predict(model_name, x_test)
 
-        ay_prediction = as_yesterday_predict(x_test)
+        x_as, y_as = imf_to_X_y(imf,24)
+        x_train_as, y_train_as, x_val_as, y_val_as, x_test_as, y_test_as = divide_data(x_as, y_as, train_pc=0.8, val_pc=0.1)
+        ay_prediction = as_yesterday_predict(x_test_as)
         alh_prediction = as_last_hour_predict(x_test)
 
         plt.title(f"IMF {imf_iter}")
@@ -68,7 +70,7 @@ def training():
         plt.show()
 
         print(f"MSE(lstm): {mse(y_test, lstm_prediction)}")
-        print(f"MSE(ay): {mse(y_test, ay_prediction)}")
+        print(f"MSE(ay): {mse(y_test_as, ay_prediction)}")
         print(f"MSE(alh): {mse(y_test, alh_prediction)}")
 
     signal_n = [[temp] for temp in signal]
@@ -79,10 +81,12 @@ def training():
     model_name = f"emdlstm/residual"
     learning_rate = 0.0001
     num_of_epochs = 100
-    run_lstm_model(model_name, x_train, y_train, x_val, y_val, window_size, data_types, epochs=num_of_epochs, learning_rate=learning_rate)
+    # run_lstm_model(model_name, x_train, y_train, x_val, y_val, window_size, data_types, epochs=num_of_epochs, learning_rate=learning_rate)
     lstm_prediction = lstm_predict(model_name, x_test)
 
-    ay_prediction = as_yesterday_predict(x_test)
+    x_as, y_as = imf_to_X_y(signal_n,24)
+    x_train_as, y_train_as, x_val_as, y_val_as, x_test_as, y_test_as = divide_data(x_as, y_as, train_pc=0.8, val_pc=0.1)
+    ay_prediction = as_yesterday_predict(x_test_as)
     alh_prediction = as_last_hour_predict(x_test)
 
     plt.title(f"residual")
@@ -95,7 +99,7 @@ def training():
     plt.show()
 
     print(f"MSE(lstm): {mse(y_test, lstm_prediction)}")
-    print(f"MSE(ay): {mse(y_test, ay_prediction)}")
+    print(f"MSE(ay): {mse(y_test_as, ay_prediction)}")
     print(f"MSE(alh): {mse(y_test, alh_prediction)}")
 
 
@@ -137,7 +141,10 @@ def predict():
     prediction = np.sum(predicted_imss, axis=0)
     print(prediction)
 
-    ay_prediction = as_yesterday_predict(x_test_all)
+    x_y_by_cities24= df_to_X_y(cities_dict,24)
+    x_as, y_as = get_x_y_from_cities(x_y_by_cities24, ["Chicago"])
+    x_train_as, y_train_as, x_val_as, y_val_as, x_test_as, y_test_as = divide_data(x_as, y_as, train_pc=0.8, val_pc=0.1)
+    ay_prediction = as_yesterday_predict(x_test_as)
     alh_prediction = as_last_hour_predict(x_test_all)
 
     model_name = "lstm/chicago_5h_temp_only"
@@ -159,7 +166,7 @@ def predict():
     plt.show()
 
     print(f"MSE(EMD+lstm): {mse(y_test_all, prediction)}")
-    print(f"MSE(ay): {mse(y_test_all, ay_prediction)}")
+    print(f"MSE(ay): {mse(x_test_as, ay_prediction)}")
     print(f"MSE(alh): {mse(y_test_all, alh_prediction)}")
     print(f"MSE(oneLSTM): {mse(y_test_all, one_LSTM_prediction)}")
 
